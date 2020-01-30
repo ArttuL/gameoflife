@@ -30,7 +30,7 @@ class GameOfLife:
             np.place(world_array, birth_mask, [1])
             steps.append(world_array.copy())
            # Check if the world is static or not
-            steps_static=append(np.all(steps[i-1]==steps[i]))
+            steps_static.append(np.all(steps[i-1]==steps[i]))
          # save results   
         self.steps_static=steps_static
         self.steps=steps
