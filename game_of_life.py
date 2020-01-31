@@ -23,7 +23,13 @@ class GameOfLife:
             # Very clever way of checking cells neighbors with convolution (not my own invention :)
             neighbors_array = signal.convolve2d(world_array, kernel, mode="same",boundary='wrap')
             # Check the rules of life and death
-            death_mask=np.logical_or(neighbors_array==2, neighbors_array==3) 
+            # Any live cell with fewer than two live neighbours dies, as if by underpopulation.
+            # Any live cell with two or three live neighbours lives on to the next generation.
+            # Any live cell with more than three live neighbours dies, as if by overpopulation.
+            # Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+
+            # Check which cells will die and which ones will live
+            death_mask=np.logical_or(neighbors_array<2, neighbors_array>3) 
             birth_mask=neighbors_array==3
             # Update the array
             np.place(world_array, death_mask, [0])
@@ -35,3 +41,37 @@ class GameOfLife:
         self.steps_static=steps_static
         self.steps=steps
         return steps
+
+ def gol_animation(steps):
+    # Animates gameoflife runs
+    # input steps=list of numpy arrays
+
+    Size=steps[0].shape[0]
+    fig = plt.figure()
+    ax = plt.axes(xlim=(0, Size-1), ylim=(0, Size-1))
+    #line, = ax.plot([], [], lw=2)
+
+    # initialization function: plot the background of each frame
+    def init():
+        ax.set_data([], [])
+        return ax
+
+    # animation function.  This is called sequentially
+    def animate(i):
+        frame=steps[i]
+        print(i)
+        size=frame.shape[0]
+        #G is a NxNx3 matrix
+        G = np.zeros((size,size,3))
+        #Where we set the RGB for each pixel
+        G[frame>0.5] = [0,0,0]
+        G[frame<0.5] = [1,1,1]
+        ax.imshow(G,interpolation='nearest')
+        ax.set_title("Game of life. Step : "+str(i))
+        return ax
+
+    a=0.5
+    # call the animator.  blit=True means only re-draw the parts that have changed.
+    anim = animation.FuncAnimation(fig, animate, init_func=None,
+                                   frames=len(steps)-1, interval=500, blit=False)
+    return anim       
