@@ -13,6 +13,7 @@ class GameOfLife:
         self.initial_state=initial_state
         self.steps=None
         self.steps_static=None
+
     def run(self,duration=10):
         # One game of life run
         steps=[]
@@ -22,8 +23,10 @@ class GameOfLife:
         kernel[1,1] = 0
         steps.append(world_array.copy())
         for i in range(1,duration):
-            # Very clever way of checking cells neighbors with convolution (not my own invention :)
+            # Very clever way of checking cells neighbors with convolution (not my own invention :). 
+            # Takes automatically care of periodic boundaries
             neighbors_array = signal.convolve2d(world_array, kernel, mode="same",boundary='wrap')
+
             # Check the rules of life and death
             # Any live cell with fewer than two live neighbours dies, as if by underpopulation.
             # Any live cell with two or three live neighbours lives on to the next generation.
@@ -62,7 +65,6 @@ def gol_animation(steps):
     # animation function.  This is called sequentially
     def animate(i):
         frame=steps[i]
-        print(i)
         size=frame.shape[0]
         #G is a NxNx3 matrix
         G = np.zeros((size,size,3))
