@@ -3,8 +3,9 @@ import pandas as pd
 import scipy
 import os
 import sys
+import matplotlib.pyplot as plt
 from scipy import signal
-
+from matplotlib import animation, rc
 class GameOfLife:
     def __init__(self,initial_state=None):
         print(initial_state)
@@ -42,9 +43,9 @@ class GameOfLife:
         self.steps=steps
         return steps
 
- def gol_animation(steps):
+def gol_animation(steps):
     # Animates gameoflife runs
-    # input steps=list of numpy arrays
+    # input steps=list of numpy arrays of an GoL game
 
     Size=steps[0].shape[0]
     fig = plt.figure()
@@ -66,7 +67,13 @@ class GameOfLife:
         #Where we set the RGB for each pixel
         G[frame>0.5] = [0,0,0]
         G[frame<0.5] = [1,1,1]
-        ax.imshow(G,interpolation='nearest')
+        extent = (0, steps[0].shape[1], steps[0].shape[0], 0)
+        ax.imshow(G,interpolation='nearest',extent=extent)
+        # Major ticks
+        ax.set_xticks(np.arange(0, Size, 1))
+        ax.set_yticks(np.arange(0, Size, 1))
+
+        ax.grid(color='w', linewidth=2)
         ax.set_title("Game of life. Step : "+str(i))
         return ax
 
