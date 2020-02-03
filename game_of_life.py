@@ -6,6 +6,7 @@ import sys
 import matplotlib.pyplot as plt
 from scipy import signal
 from matplotlib import animation, rc
+
 class GameOfLife:
     def __init__(self,initial_state=None):
         print(initial_state)
@@ -43,13 +44,14 @@ class GameOfLife:
         self.steps=steps
         return steps
 
+
+# Visualization functions
 def gol_animation(steps):
     # Animates gameoflife runs
     # input steps=list of numpy arrays of an GoL game
 
-    Size=steps[0].shape[0]
     fig = plt.figure()
-    ax = plt.axes(xlim=(0, Size-1), ylim=(0, Size-1))
+    ax = plt.axes()
     #line, = ax.plot([], [], lw=2)
 
     # initialization function: plot the background of each frame
@@ -67,18 +69,61 @@ def gol_animation(steps):
         #Where we set the RGB for each pixel
         G[frame>0.5] = [0,0,0]
         G[frame<0.5] = [1,1,1]
-        extent = (0, steps[0].shape[1], steps[0].shape[0], 0)
-        ax.imshow(G,interpolation='nearest',extent=extent)
-        # Major ticks
-        ax.set_xticks(np.arange(0, Size, 1))
-        ax.set_yticks(np.arange(0, Size, 1))
+    
+        ax.imshow(G,interpolation='nearest',origin='upper')
+         # For some reason imshow inverts in relation to y-axis
+        #ax.invert_yaxis()
 
-        ax.grid(color='w', linewidth=2)
+        # Major ticks
+        ax.set_xticks(np.arange(0,size, 1))
+        ax.set_yticks(np.arange(0, size, 1))
+
+        # Labels for major ticks
+        ax.set_xticklabels(np.arange(1, size+1, 1))
+        ax.set_yticklabels(np.arange(1, size+1, 1))
+
+        # Minor ticks
+        ax.set_xticks(np.arange(-.5, size, 1), minor=True)
+        ax.set_yticks(np.arange(-.5, size, 1), minor=True)
+
+        ax.grid(color='grey', linewidth=2,which='minor')
         ax.set_title("Game of life. Step : "+str(i))
         return ax
 
-    a=0.5
     # call the animator.  blit=True means only re-draw the parts that have changed.
     anim = animation.FuncAnimation(fig, animate, init_func=None,
                                    frames=len(steps)-1, interval=500, blit=False)
     return anim       
+
+def plot_step(gol_step):
+    size=gol_step.shape[0]
+    ax = plt.axes()
+
+    #G is a NxNx3 matrix
+    G = np.zeros((size,size,3))
+    #Where we set the RGB for each pixel
+    G[gol_step>0.5] = [0,0,0]
+    G[gol_step<0.5] = [1,1,1]
+    ax.imshow(G,interpolation='nearest',origin='upper')
+    # For some reason imshow inverts in relation to y-axis
+    #ax.invert_yaxis()
+
+   # Major ticks
+    ax.set_xticks(np.arange(0,size, 1))
+    ax.set_yticks(np.arange(0, size, 1))
+
+    # Labels for major ticks
+    ax.set_xticklabels(np.arange(1, size+1, 1))
+    ax.set_yticklabels(np.arange(1, size+1, 1))
+
+    # Minor ticks
+    ax.set_xticks(np.arange(-.5, size, 1), minor=True)
+    ax.set_yticks(np.arange(-.5, size, 1), minor=True)
+    ax.grid(color='grey', linewidth=2,which='minor')
+
+
+    ax.set_title("Game of life step")
+
+    return ax    
+
+
