@@ -52,7 +52,7 @@ class GameOfLife:
 def gol_animation(steps):
     # Animates gameoflife runs
     # input steps=list of numpy arrays of an GoL game
-    fig, ax = plt.subplots(figsize=(20, 10))
+    fig, ax = plt.subplots(figsize=(10, 10))
     # initialization function: plot the background of each frame
     def init():
         
@@ -69,7 +69,7 @@ def gol_animation(steps):
         G[frame>0.5] = [0,0,0]
         G[frame<0.5] = [1,1,1]
     
-        _=ax.imshow(G,interpolation='nearest',origin='lower')
+        _=ax.imshow(G,interpolation='nearest',origin='upper')
          # For some reason imshow inverts in relation to y-axis
         #ax.invert_yaxis()
 
@@ -79,7 +79,7 @@ def gol_animation(steps):
 
         # Labels for major ticks
         _=ax.set_xticklabels(np.arange(1, size+1, 1))
-        _=ax.set_yticklabels(np.arange(1, size+1, 1))
+        _=ax.set_yticklabels(np.arange(size, 0, -1))
 
         # Minor ticks
         _=ax.set_xticks(np.arange(-.5, size, 1), minor=True)
@@ -87,16 +87,16 @@ def gol_animation(steps):
 
         _=ax.grid(color='grey', linewidth=2,which='minor')
         _=ax.set_title("Game of life. Step : "+str(i))
-        return ax
+        return 
 
     # call the animator.  blit=True means only re-draw the parts that have changed.
-    anim = animation.FuncAnimation(fig, animate, init_func=init,
+    anim = animation.FuncAnimation(fig, animate, init_func=None,
                                    frames=len(steps)-1, interval=500, blit=False)
     return anim       
 
 def plot_step(gol_step):
     size=gol_step.shape[0]
-    fig, ax = plt.subplots(figsize=(20, 10))
+    fig, ax = plt.subplots(figsize=(10, 10))
     #ax = plt.axes()
 
     #G is a NxNx3 matrix
@@ -114,7 +114,7 @@ def plot_step(gol_step):
 
     # Labels for major ticks
     ax.set_xticklabels(np.arange(1, size+1, 1))
-    ax.set_yticklabels(np.arange(1, size+1, 1))
+    ax.set_yticklabels(np.arange(size, 0, -1))
 
     # Minor ticks
     ax.set_xticks(np.arange(-.5, size, 1), minor=True)
