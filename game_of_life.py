@@ -39,8 +39,8 @@ class GameOfLife:
             # Any live cell with more than three live neighbours dies, as if by overpopulation.
             # Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
 
-            # Check which cells will die and which ones will live
-            death_mask=np.logical_or(neighbors_array<2, neighbors_array>3)
+            # Check which cells will die and which shall live
+            death_mask=np.logical_or(neighbors_array<rule['survive'][0], neighbors_array>rule['survive'][1])
 
             birth_conditions_masks=[neighbors_array==i for i in rule['birth']]
             birth_mask=np.logical_or.reduce(birth_conditions_masks)
