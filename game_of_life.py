@@ -13,9 +13,15 @@ class GameOfLife:
         self.initial_state=initial_state
         self.steps=None
         self.steps_static=None
+        # Default mode is Conways Game of B3S23 
+        self.rule={'birth':[3],'survive':[2,3]}
 
-    def run(self,duration=10):
+    def run(self,duration=10,rule={'birth':[3],'survive':[2,3]}):
         # One game of life run
+        # Duration is the number of steps of one game
+        # Rule decides how different cells live or die. 'birth' defines the amount of living neighbor cells required
+        # to make a dead cell to come alive. 'survive' defines minimum and maximum number of neighbors that are required to the cell keep on living 
+
         steps=[]
         steps_static=[]
         world_array=self.initial_state.copy()
@@ -34,8 +40,12 @@ class GameOfLife:
             # Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
 
             # Check which cells will die and which ones will live
-            death_mask=np.logical_or(neighbors_array<2, neighbors_array>3) 
-            birth_mask=neighbors_array==3
+            death_mask=np.logical_or(neighbors_array<2, neighbors_array>3)
+
+            birth_conditions_masks=[neighbors_array==i for i in rule['birth']]
+            birth_mask=np.logical_or.reduce(birth_conditions_masks)
+
+            #birth_mask=neighbors_array==3
             # Update the array
             np.place(world_array, death_mask, [0])
             np.place(world_array, birth_mask, [1])
@@ -45,6 +55,7 @@ class GameOfLife:
          # save results   
         self.steps_static=steps_static
         self.steps=steps
+        self.rule=rule
         return steps
 
 
