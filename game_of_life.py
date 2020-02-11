@@ -13,7 +13,7 @@ class GameOfLife:
         self.initial_state=initial_state
         self.steps=None
         self.steps_static=None
-        # Default mode is Conways Game of B3S23 
+        # Default mode is Conways Game  B3S23 
         self.rule={'birth':[3],'survive':[2,3]}
 
     def run(self,duration=10,rule={'birth':[3],'survive':[2,3]}):
@@ -34,14 +34,14 @@ class GameOfLife:
             neighbors_array = signal.convolve2d(world_array, kernel, mode="same",boundary='wrap')
 
             # Check the rules of life and death
-            # Any live cell with fewer than two live neighbours dies, as if by underpopulation.
-            # Any live cell with two or three live neighbours lives on to the next generation.
-            # Any live cell with more than three live neighbours dies, as if by overpopulation.
-            # Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+            # Any live cell with fewer than survive[0] live neighbours dies, as if by underpopulation.
+            # Any live cell with survive[0] or survive[1] live neighbours lives on to the next generation.
+            # Any live cell with more than survive[1] live neighbours dies, as if by overpopulation.
+            # Any dead cell with exactly birth[:] live neighbours becomes a live cell, as if by reproduction.
 
             # Check which cells will die and which shall live
             death_mask=np.logical_or(neighbors_array<rule['survive'][0], neighbors_array>rule['survive'][1])
-
+            # Boolean masks for empty cells which come alive at this step 
             birth_conditions_masks=[neighbors_array==i for i in rule['birth']]
             birth_mask=np.logical_or.reduce(birth_conditions_masks)
 
@@ -61,8 +61,8 @@ class GameOfLife:
 
 # Visualization functions
 def gol_animation(steps):
-    # Animates gameoflife runs
-    # input steps=list of numpy arrays of an GoL game
+    # This functuion animates gameoflife runs
+    # input: steps=list of numpy arrays of an GoL game steps
     fig, ax = plt.subplots(figsize=(10, 10))
     # initialization function: plot the background of each frame
     def init():
@@ -70,7 +70,7 @@ def gol_animation(steps):
         _=ax.set_data([], [])
         return ax
 
-    # animation function.  This is called sequentially
+    # Animation function.  This is called sequentially
     def animate(i):
         frame=steps[i]
         size=frame.shape[0]
