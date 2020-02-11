@@ -9,7 +9,6 @@ from matplotlib import animation, rc
 
 class GameOfLife:
     def __init__(self,initial_state=None):
-        print(initial_state)
         self.initial_state=initial_state
         self.steps=None
         self.steps_static=None
